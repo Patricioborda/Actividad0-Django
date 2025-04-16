@@ -1,0 +1,26 @@
+# Entorno virtual
+env/
+
+# Archivos de compilación de Python
+*.pyc
+__pycache__/
+
+# Archivos de configuración del editor (si usas VSCode o PyCharm)
+.vscode/
+.idea/
+
+# Base de datos de Django (si usas SQLite)
+db.sqlite3
+
+# Archivos generados por Django
+*.log
+*.pot
+
+# Archivos estáticos generados por Django
+/staticfiles/
+
+# Archivos de dependencias de pipenv (si usas pipenv)
+Pipfile.lock
+
+# Archivos de sistema (si usas macOS o similares)
+.DS_Store
