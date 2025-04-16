@@ -1,3 +1,9 @@
 li a {
     color: green;
 }
+body {
+    background: white url("https://www.frlp.utn.edu.ar/sites/default/files/2017-03/FRLP%206.JPG") no-repeat;
+    background-size: cover;  /* Ajusta la imagen a todo el tamaño de la pantalla */
+    background-position: center center; /* Centra la imagen de fondo */
+    background-attachment: fixed; /* Mantiene la imagen fija al hacer scroll */
+}
