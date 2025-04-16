@@ -1,6 +1,7 @@
 from django.urls import path
-
 from . import views
+
+app_name = "polls"  # Define el espacio de nombres para las URLs de esta app
 
 urlpatterns = [
     # ex: /polls/
