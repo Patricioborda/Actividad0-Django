@@ -1,1 +1,1 @@
-# Actividad0-Django
+# Alumno: ALESANDRO PATRICIO BORDA
