@@ -5,6 +5,16 @@ from django.urls import reverse
 
 from .models import Question
 
+# ✅ Función auxiliar para crear preguntas con offset de días
+def create_question(question_text, days):
+    """
+    Crea una pregunta con el `question_text` dado y la publica con un
+    offset de `days` respecto a ahora (negativo para el pasado, positivo para el futuro).
+    """
+    time = timezone.now() + datetime.timedelta(days=days)
+    return Question.objects.create(question_text=question_text, pub_date=time)
+
+# 🧪 Tests del modelo Question
 class QuestionModelTests(TestCase):
     def test_was_published_recently_with_future_question(self):
         time = timezone.now() + datetime.timedelta(days=30)
@@ -21,48 +31,42 @@ class QuestionModelTests(TestCase):
         recent_question = Question(pub_date=time)
         self.assertIs(recent_question.was_published_recently(), True)
 
+# 🧪 Tests de la vista IndexView
 class QuestionIndexViewTests(TestCase):
     def test_no_questions(self):
         response = self.client.get(reverse("polls:index"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "No polls are available.")
-        self.assertQuerysetEqual(response.context["latest_question_list"], [])
-
-    def test_future_question(self):
-        Question.objects.create(
-            question_text="Pregunta futura.",
-            pub_date=timezone.now() + datetime.timedelta(days=30)
-        )
-        response = self.client.get(reverse("polls:index"))
-        self.assertContains(response, "No polls are available.")
-        self.assertQuerysetEqual(response.context["latest_question_list"], [])
+        self.assertQuerySetEqual(response.context["latest_question_list"], [])
 
     def test_past_question(self):
-        question = Question.objects.create(
-            question_text="Pregunta pasada.",
-            pub_date=timezone.now() - datetime.timedelta(days=1)
-        )
+        question = create_question("Past question.", days=-1)
         response = self.client.get(reverse("polls:index"))
-        # Comparar solo el texto de las preguntas
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             response.context["latest_question_list"],
-            [question.question_text],  # Solo comparamos el texto de la pregunta
-            transform=str
+            [question],
         )
 
-    def test_future_and_past_question(self):
-        past_question = Question.objects.create(
-            question_text="Pasada",
-            pub_date=timezone.now() - datetime.timedelta(days=1)
-        )
-        future_question = Question.objects.create(
-            question_text="Futura",
-            pub_date=timezone.now() + datetime.timedelta(days=1)
-        )
+    def test_future_question(self):
+        create_question("Future question.", days=1)
         response = self.client.get(reverse("polls:index"))
-        # Comparar solo el texto de la pregunta pasada
-        self.assertQuerysetEqual(
+        self.assertContains(response, "No polls are available.")
+        self.assertQuerySetEqual(response.context["latest_question_list"], [])
+
+    def test_future_and_past_question(self):
+        past_question = create_question("Past question.", days=-1)
+        create_question("Future question.", days=1)
+        response = self.client.get(reverse("polls:index"))
+        self.assertQuerySetEqual(
             response.context["latest_question_list"],
-            [past_question.question_text],  # Solo comparamos el texto de la pregunta pasada
-            transform=str
+            [past_question],
+        )
+
+    def test_two_past_questions(self):
+        question1 = create_question("Past question 1.", days=-30)
+        question2 = create_question("Past question 2.", days=-5)
+        response = self.client.get(reverse("polls:index"))
+        self.assertQuerySetEqual(
+            response.context["latest_question_list"],
+            [question2, question1],
         )
