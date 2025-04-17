@@ -1,12 +1,36 @@
+{% load static %}
+
+<!-- Enlace al archivo de estilos CSS -->
+<link rel="stylesheet" href="{% static 'polls/style.css' %}">
+
+<!-- Encabezado con la pregunta -->
+<header>
+    <h1>{{ question.question_text }}</h1>
+</header>
+
+<!-- Formulario para votar -->
 <form action="{% url 'polls:vote' question.id %}" method="post">
     {% csrf_token %}
+    
     <fieldset>
-        <legend><h1>{{ question.question_text }}</h1></legend>
-        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+        <legend>Elige una opción</legend>
+
+        <!-- Mensaje de error si no se ha seleccionado una opción -->
+        {% if error_message %}
+            <p class="error-message"><strong>{{ error_message }}</strong></p>
+        {% endif %}
+
+        <!-- Opciones de respuesta -->
         {% for choice in question.choice_set.all %}
-            <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
-            <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
+            <div class="choice-option">
+                <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
+                <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label>
+            </div>
         {% endfor %}
     </fieldset>
-    <input type="submit" value="Vote">
-    </form>
+
+    <!-- Botón de enviar -->
+    <div class="submit-button">
+        <input type="submit" value="Votar" class="btn-vote">
+    </div>
+</form>

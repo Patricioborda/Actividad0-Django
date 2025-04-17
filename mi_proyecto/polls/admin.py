@@ -1,8 +1,12 @@
 # polls/admin.py
 from django.contrib import admin
+from django.contrib.admin import AdminSite
 from django.core.exceptions import ValidationError
 from .models import Question, Choice
 
+admin.site.site_header = "Administración de Encuestas"
+admin.site.site_title = "Panel de Admin"
+admin.site.index_title = "Bienvenido al Panel de Administración"
 
 class ChoiceInline(admin.TabularInline):
     model = Choice

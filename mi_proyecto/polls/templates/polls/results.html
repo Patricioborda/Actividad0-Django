@@ -1,9 +1,38 @@
-<h1>{{ question.question_text }}</h1>
+{% load static %}
 
-<ul>
-{% for choice in question.choice_set.all %}
-    <li>{{ choice.choice_text }} -- {{ choice.votes }} vote{{ choice.votes|pluralize }}</li>
-{% endfor %}
-</ul>
+<!-- Enlace al archivo de estilos CSS -->
+<link rel="stylesheet" href="{% static 'polls/style.css' %}">
 
-<a href="{% url 'polls:detail' question.id %}">Vote again?</a>
+<!-- Contenedor con fondo blanco -->
+<div class="results-container">
+    <!-- Encabezado con la pregunta -->
+    <header>
+        <h1>{{ question.question_text }}</h1>
+    </header>
+
+    <!-- Subtítulo para los resultados -->
+    <h2>Resultados</h2>
+
+    <!-- Mostrar opciones de respuesta -->
+    {% if question.choice_set.count == 0 %}
+        <p>No votes yet. Sé el primero en votar.</p>
+    {% else %}
+        <ul>
+            {% for choice in question.choice_set.all %}
+                <li>
+                    <div class="choice-text">
+                        {{ choice.choice_text }}
+                    </div>
+                    <div class="vote-count">
+                        {{ choice.votes }} vote{{ choice.votes|pluralize }}
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <!-- Opción para votar nuevamente -->
+    <div class="vote-again">
+        <a href="{% url 'polls:detail' question.id %}">Votar nuevamente</a>
+    </div>
+</div>
