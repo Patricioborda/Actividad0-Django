@@ -25,6 +25,11 @@ SECRET_KEY = 'django-insecure-u($owe8ij(@89_ul9a7=5*8d@)%h8dls)ttlac(=-^7kvprp=4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
+
+
 ALLOWED_HOSTS = []
 
 
@@ -38,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+     'debug_toolbar', 
 ]
 
 MIDDLEWARE = [
@@ -48,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'mi_proyecto.urls'
